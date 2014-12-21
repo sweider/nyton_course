@@ -1,0 +1,85 @@
+function clearResults() {
+    $('#results_str').remove();
+    $('#message').remove();
+    $('#solution_label').remove();
+    $('#chart').remove();
+}
+
+function draw_chart(result) {
+    var series = [];
+    series[0] = {
+        name: 'Function representation',
+        marker: {
+            enabled: false
+        },
+        pointStart: result.chart_start,
+        pointInterval: result.step,
+        data: result.y_vals
+    };
+    for(var i = 1; i <= result.kas.length; i++){
+        series[i] = {
+            name: 'Tangent ' + i,
+            marker: {
+                enabled: false
+            },
+            pointStart: result.kas[i - 1].start,
+            pointInterval: result.kas[i - 1].step,
+            data: result.kas[i-1].y_vals
+        };
+    }
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart',
+            zoomType: 'xy'
+
+        },
+        title: { text: "" },
+//        tooltip:{
+//            shared: false,
+//            valueDecimals: 2,
+//            headerFormat: '<span style="font-size: 10px"><b>X:</b> {point.key}</span><br/>'
+//        },
+        xAxis: {
+            title: {text: 'x'}
+        },
+        yAxis: {
+            title: { text: 'f(x)'}
+        },
+        series: series
+    });
+
+}
+
+function insertResults(result, results_label) {
+    var success_label = "<div id='message' class='alert-success alert-dismissable alert'>" +
+            "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" +
+            "Equation successfully solved!" +
+            "</div>";
+    var results_tag = "<p id='results_str'><strong>x</strong> = " + result.x + ", <strong>Iterations count</strong> = " + result.count + "</p>";
+    var chart_caption = $("<h3 id='solution_label'>Solution charts:</h3>");
+    var charts_div = $("<div id='chart' class='chart' />");
+    charts_div.insertAfter(results_label);
+    chart_caption.insertAfter(results_label);
+    $(results_tag).insertAfter(results_label);
+    $(success_label).insertAfter(results_label);
+    draw_chart(result);
+}
+
+function printError(results_label) {
+    var error_tag = "<div id='message' class='alert-danger alert-dismissable alert'>" +
+            "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+            "Equation cannot be solved using Nyton's method! </div>";
+    $(error_tag).insertAfter(results_label);
+}
+
+$(document).ready(function(){
+    var result = <%= raw @result.to_json %>;
+    var results_div = $('#results');
+    var results_label = results_div.find('#results_label');
+
+    clearResults();
+    results_div.removeClass('hidden');
+    if(result.count < 10000) { insertResults(result, results_label); }
+    else{ printError(results_label); }
+
+});

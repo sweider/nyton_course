@@ -1,20 +1,62 @@
 <div class="container">
-    <h1>Main#index</h1>
-    <div class="col-md-3">
-        <%= form_tag controller: 'main', action: 'calculate', method: 'post'  do  %>
-            <div class="form-group">
-                <%= label_tag :equation, 'Enter equation please:'  %>
-                <%= text_field_tag :equation, '', {class: 'form-control'} %>
-            </div>
-            <div class="form-group">
-                <%= label_tag  :a, 'A:'%>
-                <%= text_field_tag :a, '', {class: 'form-control'} %>
-            </div>
-            <div class="form-group">
-                <%= label_tag :b, 'B:' %>
-                <%= text_field_tag :b, '', {class: 'form-control'} %>
-            </div>
-            <%= submit_tag 'Calculate', {class: 'btn btn-primary btn-md'} %>
-        <% end %>
+  <h1 class="page-header">Nyton solver</h1>
+    <div id="form" class="col-md-3">
+      <h3>Conditions:</h3>
+      <%= form_tag('/main/calculate', remote:true) do %>
+        <div class="form-group">
+            <%= label_tag :equation, 'Enter equation please:'  %>
+            <%= text_field_tag :equation, '', {class: 'form-control'} %>
+        </div>
+        <div class="form-group">
+            <%= label_tag  :a, 'A:'%>
+            <%= text_field_tag :a, '', {class: 'form-control input', id:'a_input'} %>
+        </div>
+        <div class="form-group">
+            <%= label_tag :b, 'B:' %>
+            <%= text_field_tag :b, '', {class: 'form-control input', id:'b_input'} %>
+        </div>
+        <%= submit_tag 'Calculate', {class: 'btn btn-primary btn-md', id: 'submit_btn', disabled: 'true'} %>
+          <button class="btn btn-md btn-default" data-toggle="modal" data-target="#myModal">
+            How to use
+          </button>
+      <% end %>
     </div>
+    <div id="results" class="col-md-9 col-sm-offset-0 hidden">
+        <h3 id="results_label">Results:</h3>
+    </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">How to use this tool for solving equations</h4>
+        </div>
+        <div class="modal-body">
+          <p>This tool is using Nyton method for solving equations. You can get information about this method here -->
+          <%= link_to 'wiki', 'https://en.wikipedia.org/wiki/Newton%27s_method', {target: '_blank'} %>.</p>
+          <p><strong>There are several rules you should follow during using this tool:</strong></p>
+          <ul>
+            <li>
+              Setting power of number or variable looks like: x**n,
+              where x is a source number and n is a target power. If you need
+            </li>
+            <li>
+              You can use several math functions:
+              <ul>
+                <li>cos</li>
+                <li>sin</li>
+                <li>tan</li>
+              </ul>
+            </li>
+            <li> A should be lower then B</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">I understand!</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

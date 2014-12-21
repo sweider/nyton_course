@@ -1,13 +1,12 @@
 module MainHelper
   require 'mathn'
   include Math
-  # Вычисляет значение функции, записанной в виде строки в точке х
-  # @param [String] function строковое представление функции
-  # @param [Float] x точка, в которой вычисляем значение функции
-  def calculate_function_in_x(function, x)
-    eval function.downcase.gsub(/x/, x.to_s)
+
+  def calculate_function_in_range(function, range)
+    step = 0.02; y_vals = []
+    range.step(step) { |x| y_vals << func_x(function, x) }
+    return y_vals, step
   end
-  alias func_x calculate_function_in_x
 
   def calculate_nyton(function, precision, a, b)
     convex = func_x(function, b) * deriv_x_p(function,b,2) > 0
@@ -16,7 +15,7 @@ module MainHelper
   end
 
   def iterative_proc(function, start_value, precision)
-    x = start_value
+    x = start_value; kas = []
     counter = 0
     10000.times do
       counter += 1
@@ -24,10 +23,21 @@ module MainHelper
       f_val = func_x(function, x)
       d_val = deriv_x(function, x)
       x = x - (f_val / d_val)
+      step = x - prev_x
+      y_prev = func_x(function, prev_x)
+      kas << {y_vals: [y_prev, 0], step: step, start: prev_x}
       break if (x - prev_x).abs <= precision
     end
-    {x: x, count: counter}
+    {x: x, count: counter, kas: kas}
   end
+
+  # Вычисляет значение функции, записанной в виде строки в точке х
+  # @param [String] function строковое представление функции
+  # @param [Float] x точка, в которой вычисляем значение функции
+  def calculate_function_in_x(function, x)
+    eval function.downcase.gsub(/x/, x.to_s)
+  end
+  alias func_x calculate_function_in_x
 
   def calculate_function_derivative_in_x(function, x)
     h = 1e-7
