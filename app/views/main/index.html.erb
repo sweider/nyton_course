@@ -1,0 +1,20 @@
+<div class="container">
+    <h1>Main#index</h1>
+    <div class="col-md-3">
+        <%= form_tag controller: 'main', action: 'calculate', method: 'post'  do  %>
+            <div class="form-group">
+                <%= label_tag :equation, 'Enter equation please:'  %>
+                <%= text_field_tag :equation, '', {class: 'form-control'} %>
+            </div>
+            <div class="form-group">
+                <%= label_tag  :a, 'A:'%>
+                <%= text_field_tag :a, '', {class: 'form-control'} %>
+            </div>
+            <div class="form-group">
+                <%= label_tag :b, 'B:' %>
+                <%= text_field_tag :b, '', {class: 'form-control'} %>
+            </div>
+            <%= submit_tag 'Calculate', {class: 'btn btn-primary btn-md'} %>
+        <% end %>
+    </div>
+</div>
